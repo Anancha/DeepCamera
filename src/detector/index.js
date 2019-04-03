@@ -9,7 +9,7 @@ var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
 var timeline=require('./timeline')
 var face_motions=require('./face_motions')
-var UUID = require('uuid')
+var uuid = require('uuid')
 var upload = require('./upload')
 var requestretry = require('requestretry')
 
@@ -351,6 +351,10 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
   })
   return face_list
 }
+
+function is_whole_body(face_location, human_location){
+  return ''
+}
 function do_face_detection(cameraId,file_path,person_file_path,person_count,start_ts,tracking_info,current_tracker_id){
   var ts = new Date().getTime()
   var timeout = setTimeout(function(){
@@ -399,9 +403,9 @@ function do_face_detection(cameraId,file_path,person_file_path,person_count,star
           }
     */
 
-      var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
+      var faces_to_be_recognized = getFaceRecognitionTaskList(cameraId,
         cropped_images,tracking_info,current_tracker_id)
-      if (faces_to_be_recognited.length >0) {
+      if (faces_to_be_recognized.length >0) {
         // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
         if(SAMPLING_TO_SAVE_ENERGY_MODE){
           if(getEmbeddingInProcessingStatus(cameraId)){
@@ -430,14 +434,16 @@ function do_face_detection(cameraId,file_path,person_file_path,person_count,star
             cur_group_id = group_id
         })
         setEmbeddingInProcessingStatus(cameraId,true)
-        deepeye.embedding_clustering(faces_to_be_recognited, current_tracker_id, function(err,results){
-          if(results[0]['result']['recognized'] == true && person_file_path != ''){
-              var key = UUID.vi()
+	deepeye.embedding_clustering(faces_to_be_recognized, current_tracker_id, function(err,results){    
+          if(!err){
+            if(results[0]['result']['recognized'] == true && person_file_path != ''){
+              var key = uuid.v1()
               face_id = results[0]['result']['face_id']
               gst_label_api= 'http://testworkai.tiegushi.com/api/v1/groups/'+cur_group_id+'/faces'
               upload.putFile(key,person_file_path,function(error,accessUrl){ 
                 console.log('error=',error,'accessUrl=',accessUrl)
                 if(!error){
+                  console.log('accessUrl: ',accessUrl)
                   var human_json = {'uuid':device_id,
                                     'imgUrl':accessUrl,
                                     'face_id':face_id,
@@ -463,8 +469,11 @@ function do_face_detection(cameraId,file_path,person_file_path,person_count,star
                     }
                   });
                 }
-              }
-          }
+              })
+            }
+	  }else{
+            console.log('embedding calculation error: ', err)
+	  }          
           setEmbeddingInProcessingStatus(cameraId,false)
           clearTimeout(embedding_timeout)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
@@ -671,7 +680,6 @@ app.use(express.json());
 router.get('/post', (request, response) => {
     file_url = request.originalUrl
     filename = file_url.substring(file_url.indexOf('=')+1)
-    console.log(filename)
     setTimeout(function(){
        var undefined_obj
        var start = new Date()
@@ -684,13 +692,27 @@ app.post('/post2',function(request, response) {
   console.log(request.body);
   msg = request.body['msg'][0]
   person_filename = msg['personImagePath']
+  var ratio = 0
+  if(typeof(msg['faceLocation']) != "undefined"){
+    person_loc = msg['personLocation']
+    face_loc = msg['faceLocation']
+    p_y1 = person_loc.split('][')[0].split(',')[1]
+    p_y2 = person_loc.split('][')[1].split(',')[1].replace(']','')
+    f_y1 = face_loc.split('][')[0].split(',')[1]
+    f_y2 = face_loc.split('][')[1].split(',')[1].replace(']','')
+    ratio = parseFloat(f_y2-f_y1)/parseFloat(p_y2-p_y1)
+  }
   person_count = msg['faceNum']
   setTimeout(function(){
        var start = new Date()
        if(person_count==1){
           face_filename = msg['faceImagePath']
           console.log('faces are detected, go to embedding calculation')
-          onframe2("device", true, face_filename, person_filename, person_count, start)
+	  if(ratio < 0.15){
+            onframe2("device", true, face_filename, person_filename, person_count, start)
+	  } else{
+	    onframe2("device", true, face_filename, '', person_count, start)
+	  }
        } 
        else{
 	  // execute embedding calculation if only human_shape

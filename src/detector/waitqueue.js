@@ -114,12 +114,16 @@ function processWaitQueue() {
                    if (front_large_faces.length>0) {
                        console.log('do embedding after waitqueue---------')
                        deepeye.embedding(front_large_faces, trackerId,function(err,results){
-                         console.log('Got result on delayed task: '+results)
-                         timeline.update(trackerId,'delayed',cropped_num,results,function(){
-                           timeline.get_face_ids(trackerId,function(err,results){
-                             console.log(results)
+                         if(!err){
+                           console.log('Got result on delayed task: '+results)
+                           timeline.update(trackerId,'delayed',cropped_num,results,function(){
+                             timeline.get_face_ids(trackerId,function(err,results){
+                               console.log(results)
+                             })
                            })
-                         })
+                         } else{
+                           console.log('error: ', err)
+                         }
                        });
                    }
                 })

@@ -123,8 +123,10 @@ if(typeof client === 'undefined'){
 
 var ON_DEBUG = false
 module.exports = {
-  delete_image:delete_image,
+  delete_image: delete_image,
   buffer2file: buffer2file,
+  get_device_uuid:get_device_uuid,
+  get_device_group_id: get_device_group_id,
   process : function post2workaipython_test(cameraId, file_path,ts,trackerid, cb) {
       detect_task(file_path, trackerid, ts, cameraId, function (err, numFaces, cropped){
           if(err || !cropped) {
