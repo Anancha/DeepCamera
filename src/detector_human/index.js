@@ -590,12 +590,22 @@ app.post('/post2',function(request, response) {
   msg = request.body['msg'][0]
   person_filename = msg['personImagePath']
   person_count = msg['faceNum']
+  var ratio = 0
+  if(typeof(msg['faceLocation']) != "undefined"){
+    person_loc = msg['personLocation']
+    face_loc = msg['faceLocation']
+    p_y1 = person_loc.split('][')[0].split(',')[1]
+    p_y2 = person_loc.split('][')[1].split(',')[1].replace(']','')
+    f_y1 = face_loc.split('][')[0].split(',')[1]
+    f_y2 = face_loc.split('][')[1].split(',')[1].replace(']','')
+    ratio = parseFloat(f_y2-f_y1)/parseFloat(p_y2-p_y1)
+  }
   setTimeout(function(){
        var start = new Date()
        if(person_count==1){
           console.log('faces are detected, change to face box!')
        } 
-       else{
+       else if(ratio<0.20){
 	  // execute embedding calculation if only human_shape
           console.log('only human shape, go to embedding stage!')
           onframe("device", true, person_filename, person_count, start)
