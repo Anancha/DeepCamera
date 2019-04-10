@@ -437,16 +437,17 @@ function do_face_detection(cameraId,file_path,person_file_path,person_count,star
 	deepeye.embedding_clustering(faces_to_be_recognized, current_tracker_id, function(err,results){    
           if(!err){
             if(results[0]['result']['recognized'] == true && person_file_path != ''){
+              console.log('recognized true!!!')
               var key = uuid.v1()
               face_id = results[0]['result']['face_id']
               gst_label_api= 'http://testworkai.tiegushi.com/api/v1/groups/'+cur_group_id+'/faces'
               upload.putFile(key,person_file_path,function(error,accessUrl){ 
-                console.log('error=',error,'accessUrl=',accessUrl)
+                console.log('error=',error,'person_ccessUrl=',accessUrl)
                 if(!error){
-                  console.log('accessUrl: ',accessUrl)
+                  console.log('person_accessUrl: ',accessUrl)
                   var human_json = {'uuid':device_id,
                                     'imgUrl':accessUrl,
-                                    'face_id':face_id,
+                                    'faceId':face_id,
                                     'type': 'human_shape',
                                     'fuzziness': 100,
                                     'style': 'human_shape'
@@ -639,10 +640,10 @@ var onframe2 = function(cameraId, motion_detected, face_file_path, person_file_p
           ON_DEBUG && console.log('to analysis tracking info to decide \
               if save image for delayed processing: ',tracking_info)
           if(need_save_to_delayed_process(tracking_info)){
-            save_image_for_delayed_process(cameraId,file_path)
+            save_image_for_delayed_process(cameraId,face_file_path)
           } else {
             ON_DEBUG && console.log('delete image due to no need save to delayed process')
-            deepeye.delete_image(file_path)
+            deepeye.delete_image(face_file_path)
           }
       })
 
@@ -650,7 +651,7 @@ var onframe2 = function(cameraId, motion_detected, face_file_path, person_file_p
     }
     timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
       setFaceDetectInProcessingStatus(cameraId, true);
-      return do_face_detection(cameraId,file_path,person_file_path,person_count,
+      return do_face_detection(cameraId,face_file_path,person_file_path,person_count,
         start_ts,tracking_info,current_tracker_id)
     })
   } else if(is_in_tracking(cameraId)){
@@ -707,8 +708,8 @@ app.post('/post2',function(request, response) {
        var start = new Date()
        if(person_count==1){
           face_filename = msg['faceImagePath']
-          console.log('faces are detected, go to embedding calculation')
-	  if(ratio < 0.15){
+          console.log('faces are detected, go to embedding calculation, ratio=',ratio)
+	  if(ratio <= 0.25){
             onframe2("device", true, face_filename, person_filename, person_count, start)
 	  } else{
 	    onframe2("device", true, face_filename, '', person_count, start)
