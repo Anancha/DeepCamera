@@ -1,29 +1,23 @@
-# [Quick Installation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
-1. Install DeepCamera AI monitor on Android. https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/DeepCamera_03282019.apk
-2. Install mobile app to receive notification, name/labelling people(Beta test)  
-Android: https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/sharpai-2.2.67-20190122181044.apk  
-iOS: https://testflight.apple.com/join/8LXGgu3q
-
-To speed up the evaluation of DeepCamera platform, SharpAI Dev Team developed an Application to use Android Camera instead of surveillance camera, remove hardware dependency will speed up the evaluation procedure for developers.
-
-There would be some issues caused by Camera quality on the device, it always has better result if replace Android camera to surveillance camera but still, our Android AI camera is state-of-the-art production leveraging AutoML for Edge devices.
-
-
-
-## Slack Channel
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
 # What's SharpAI DeepCamera
-Deep Learning video processing surveillance on ARM GPU for face recognition and much more on the way. Turn digital camera into AI-powered camera. Production level platform for edge AI using ARM GPU/NPU, leveraging AutoML. The first world-class Edge AI full stack platform for developer/kids/home/SMB/enterprise/cloud, baking by community.
-
-Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
-
-## Data labeling on Mobile, no data scientist involed
-## Train/deploy model without programming for edge device(Embedded/Android/X86 system)
-## Mobile first, Production ready, Easy scalable, Power efficient
+This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model.
 
 ![image](screenshots/lifecycle_mac.png)
 
+DeepCamera works on Android devices.
+You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
+
+- Face recognition
+- Face Detection
+- Control from mobile application
+- Object detection
+- Motion detection
+- Human ReID (Recognition based on human shape)
+
+And a whole host of other things. Building your own AI-powered model has never been this easy!
+
+## [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
+## Slack Channel
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 ## Feature List
 - [x] High accurate Face Recognition
 - [x] Face Detection
@@ -80,7 +74,7 @@ cd DeepCamera/docker
 sudo ./run-deepeye-x86.sh start #make sure Serial No is in docker/workaipython/ro_serialno
 ```   
 
-## It is even possible to connect Surveilance Camera 
+## It is even possible to integrate with your Surveilance Camera 
 
 ### Through Shinobi (if you install DeepCamera through Docker)
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
@@ -109,21 +103,7 @@ Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038
 iOS: https://testflight.apple.com/join/8LXGgu3q
 
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
-# Call For Help
-- [x] Translation, we did deploy our production in China, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server  (English_Version)
-- [x] Remove unused code/project in https://github.com/SharpAI/mobile_app_server
-- [x] PR, more than welcome, anything :)
-- [ ] Meetup hosts, in Silicon Valley
-
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
-
-![deepcamera_arm32 on android](screenshots/deepcamera_arm32.png)
-![deepcamera_arm64 on android](screenshots/deepcamera_arm64.png)
-![deepcamera_on docker linux](screenshots/deepcamera_docker_linux.png)
-
-![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
-
-![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
  
 ## APIs doc for app server
 [Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
@@ -144,3 +124,4 @@ This project contains source code or library dependencies from the follow projec
 * Python: https://www.python.org Python 2.7 license
 * Gcc for termux with fortran scipy etc: https://github.com/its-pointless/gcc_termux
 * RembrandtAndroid project available at https://github.com/imgly/RembrandtAndroid
+* Great English-writing introduction on [analyticsvidhya](https://www.analyticsvidhya.com/blog/2019/04/top-5-machine-learning-github-reddit/)
